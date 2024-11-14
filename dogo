@@ -21,3 +21,6 @@ estimator = Estimator(
 
 estimator.fit({'train': f's3://{bucket_name}/preprocessedData.csv'})
 predictor = estimator.deploy(initial_instance_count=1, instance_type = 'ml.t3.medium')
+
+S3UploadFailedError: Failed to upload ready.csv to soe-vpn-annomaly-detector/preprocessedData.csv: An error occurred (AccessDenied) when calling the CreateMultipartUpload operation: User: arn:aws:sts::565322864285:assumed-role/vz-sagemaker/SageMaker is not authorized to perform: s3:PutObject on resource: "arn:aws:s3:::soe-vpn-annomaly-detector/preprocessedData.csv" because no identity-based policy allows the s3:PutObject action
+
