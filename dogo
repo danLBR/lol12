@@ -1,0 +1,23 @@
+s3 = boto3.client('s3')
+bucket_name = 'soeVpnAnnomalyDetector'
+s3.upload_file('ready.csv', bucket_name,'preprocessedData.csv')
+
+from sagemaker.estimator import Estimator
+
+role = get_execution_role()
+training_image = sagemaker.image_uris.retrieve('xgboost', boto3.Session().region_name, '1.0-1')
+
+estimator = Estimator(
+    image_uri = training_image,
+    role=role,
+    instance_count = 1,
+    instance_type = 'ml.t3.medium'
+    output_path = f's3://{bucket_name}/output',
+    hyperparameters = {
+        'objective': 'binary:logistic',
+        'num_round': 100
+    }
+)
+
+estimator.fit({'train': f's3://{bucket_name}/preprocessedData.csv'})
+predictor = estimator.deploy(initial_instance_count=1, instance_type = 'ml.t3.medium')
